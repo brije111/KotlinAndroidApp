@@ -3,6 +3,7 @@ package com.android.kotlinandroidapp
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.android.kotlinandroidapp.databinding.RvItemRepositoryBinding
 
 class RepositoryRecyclerViewAdapter(private var items: ArrayList<Repository>,
                                     private var listener: OnItemClickListener)
@@ -18,6 +19,11 @@ class RepositoryRecyclerViewAdapter(private var items: ArrayList<Repository>,
             = holder.bind(items[position], listener)
 
     override fun getItemCount(): Int = items.size
+    fun replaceData(it: ArrayList<Repository>) {
+        items.clear()
+        items.addAll(it)
+        notifyDataSetChanged()
+    }
 
     interface OnItemClickListener {
         fun onItemClick(position: Int)
@@ -31,7 +37,6 @@ class RepositoryRecyclerViewAdapter(private var items: ArrayList<Repository>,
             if (listener != null) {
                 binding.root.setOnClickListener({ _ -> listener.onItemClick(layoutPosition) })
             }
-
             binding.executePendingBindings()
         }
     }

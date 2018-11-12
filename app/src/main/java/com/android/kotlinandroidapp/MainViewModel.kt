@@ -1,34 +1,54 @@
 package com.android.kotlinandroidapp
 
+import android.app.Application
+import android.arch.lifecycle.AndroidViewModel
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableField
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.observers.DisposableObserver
+import io.reactivex.schedulers.Schedulers
 
-class MainViewModel : ViewModel(){
+class MainViewModel(private var gitRepoRepository: GitRepoRepository) : ViewModel()  {
 
-    var repositories = ArrayList<Repository>()
-    var repoModel: RepoModel = RepoModel()
-    val text = ObservableField<String>()
-    val isLoading = ObservableField<Boolean>()
+    val text = ObservableField("old data")
 
-    val onDataReadyCallback = object : OnDataReadyCallback {
-        override fun onDataReady(data: String) {
-            isLoading.set(false)
-            text.set(data)
-        }
-    }
+    val isLoading = ObservableField(false)
 
-    fun loadRepositories(){
+    var repositories = MutableLiveData<ArrayList<Repository>>()
+
+    private val compositeDisposable = CompositeDisposable()
+
+    fun loadRepositories() {
         isLoading.set(true)
-        repoModel.getRepositories(object : OnRepositoryReadyCallback{
-            override fun onDataReady(data: ArrayList<Repository>) {
+        compositeDisposable += gitRepoRepository
+            .getRepositories()
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeWith(object : DisposableObserver<ArrayList<Repository>>() {
+
+            override fun onError(e: Throwable) {
+                //if some error happens in our data layer our app will not crash, we will
+                // get error here
+            }
+
+            override fun onNext(data: ArrayList<Repository>) {
+                repositories.value = data
+            }
+
+            override fun onComplete() {
                 isLoading.set(false)
-                repositories = data
             }
         })
     }
 
-    fun refresh(){
-        isLoading.set(true)
-        repoModel.refreshData(onDataReadyCallback)
+    override fun onCleared() {
+        super.onCleared()
+        if (!compositeDisposable.isDisposed) {
+            compositeDisposable.dispose()
+        }
     }
 }
