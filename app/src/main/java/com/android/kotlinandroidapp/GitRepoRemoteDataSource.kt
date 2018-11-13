@@ -15,7 +15,3 @@ class GitRepoRemoteDataSource {
         return Observable.just(arrayList).delay(2, TimeUnit.SECONDS)
     }
 }
-
-interface OnRepoRemoteReadyCallback {
-    fun onRemoteDataReady(data: ArrayList<Repository>)
-}

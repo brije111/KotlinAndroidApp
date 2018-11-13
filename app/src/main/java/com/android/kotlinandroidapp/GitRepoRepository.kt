@@ -19,7 +19,3 @@ class GitRepoRepository(private val netManager: NetManager) {
         return localDataSource.getRepositories()
     }
 }
-
-interface OnRepositoryReadyCallback {
-    fun onDataReady(data: ArrayList<Repository>)
-}

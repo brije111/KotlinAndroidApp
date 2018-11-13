@@ -19,7 +19,3 @@ class GitRepoLocalDataSource {
         //todo save repositories in DB
     }
 }
-
-interface OnRepoLocalReadyCallback {
-    fun onLocalDataReady(data: ArrayList<Repository>)
-}
