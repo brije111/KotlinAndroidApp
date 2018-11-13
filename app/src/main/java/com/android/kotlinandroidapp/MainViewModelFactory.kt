@@ -9,8 +9,6 @@ class MainViewModelFactory(private val repository: GitRepoRepository)
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             return MainViewModel(repository) as T
         }
-
         throw IllegalArgumentException("Unknown ViewModel Class")
     }
-
 }

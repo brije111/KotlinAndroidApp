@@ -7,17 +7,19 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import com.android.kotlinandroidapp.databinding.ActivityMainBinding
+import dagger.android.support.DaggerAppCompatActivity
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), RepositoryRecyclerViewAdapter.OnItemClickListener {
+class MainActivity : DaggerAppCompatActivity(), RepositoryRecyclerViewAdapter.OnItemClickListener {
 
-
+    @Inject lateinit var mainViewModelFactory: MainViewModelFactory
     lateinit var binding:ActivityMainBinding
     private val repositoryRecyclerViewAdapter = RepositoryRecyclerViewAdapter(arrayListOf(), this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        val mainViewModelFactory = Injection.provideMainViewModelFactory(applicationContext)
+        //val mainViewModelFactory = Injection.provideMainViewModelFactory(applicationContext)
         val viewModel = ViewModelProviders.of(this, mainViewModelFactory)
             .get(MainViewModel::class.java)
         binding.viewModel = viewModel

@@ -2,8 +2,9 @@ package com.android.kotlinandroidapp
 
 import android.content.Context
 import android.net.ConnectivityManager
+import javax.inject.Inject
 
-class NetManager(private var applicationContext: Context) {
+class NetManager@Inject constructor(var applicationContext: Context) {
     private var status: Boolean? = false
 
     val isConnectedToInternet: Boolean?

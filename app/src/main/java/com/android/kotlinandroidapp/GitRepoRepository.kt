@@ -2,8 +2,9 @@ package com.android.kotlinandroidapp
 
 import android.content.Context
 import io.reactivex.Observable
+import javax.inject.Inject
 
-class GitRepoRepository(private val netManager: NetManager) {
+class GitRepoRepository@Inject constructor(var netManager: NetManager) {
 
     val localDataSource = GitRepoLocalDataSource()
     val remoteDataSource = GitRepoRemoteDataSource()
